@@ -1,0 +1,192 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node
+{
+    int data;
+    struct node *next;
+}lnode,*linklist;
+
+void init_link_list(linklist &l)
+{
+    l = (lnode *)malloc(sizeof(lnode));
+    if(!l)
+    {
+        printf("初始化失败");
+        exit(1);
+    }
+    l->next = NULL;
+}
+
+int list_length(linklist list)
+{
+    if(!list) return 0;
+    linklist p = list->next;
+    int num =0;
+    while(p)
+    {
+        p=p->next;
+        num++;
+    }
+    return num;
+}
+
+linklist locate(linklist list,int sum)
+{
+    linklist p = list->next;
+    while(p&&p->data!=sum)
+    {
+        p=p->next;
+    }
+    return p;
+}
+
+int insert_to_list(linklist &list,int num,int q)
+{
+    linklist list1 = list;
+    while(list1->next&&num>1)
+    {
+        list1 = list1->next;
+        num--;
+    }
+    if(num>1&&!list1->next) return 0;
+    linklist p = (lnode *)malloc(sizeof(lnode));
+    if(!p){printf("分配错误");return 0;}
+    p->data=q;
+
+
+    p->next = list1->next;
+    list1->next = p;
+    return 1;
+
+}
+
+int delete_list(linklist &list,int sum,int num)
+{
+    linklist p=list;
+    while(p->next&&sum>1)
+    {
+        p=p->next;
+        sum--;
+    }
+    if(!p->next&&num>1) return 0;
+
+    p->next=p->next->next;
+    return 1;
+}
+
+int getnum(linklist list,int i)
+{
+   int num = -1;
+   linklist p =list->next;
+   //printf("%d",p->next->data);
+   while(i>1&&p)
+   {
+       p=p->next;
+       --i;
+   }
+   if(!p&&i>1)
+   {
+       return -1;
+   }
+   return p->data;
+}
+
+int createlist_rear(linklist &list,int num)
+{
+    linklist p = list;
+    while(p->next)
+        p=p->next;
+    linklist q = (lnode *)malloc(sizeof(lnode));
+    if(!q)
+    {
+        printf("分配错误");
+        return 0;
+    }
+    q->next=NULL;
+    q->data = num;
+    p->next = q;
+    return 1;
+
+}
+
+int createlist_head(linklist &list,int num)
+{
+    linklist p = (lnode *)malloc(sizeof(lnode));
+    if(!p){
+        printf("分配错误");
+        return 0;
+    }
+    p->data = num;
+    p->next = list->next;
+    list->next = p;
+    return 1;
+}
+
+void output_list(linklist list)
+{
+    linklist li = list->next;
+    while(li)
+    {
+        printf("%d ",li->data);
+        li = li->next;
+    }
+}
+
+void destory(linklist &list)
+{
+    linklist q,p;
+    p=list;
+    q= list->next;
+    while(q)
+    {
+        free(p);
+        p=q;
+        q=q->next;
+
+    }
+    free(p);
+    list=NULL;
+}
+
+int main()
+{
+
+    linklist q =NULL;
+    init_link_list(q);
+    printf("创建链表");
+    for(int i =1;i<=10;i++)
+    {
+        createlist_head(q,i);
+    }
+    printf("length = %d\n",list_length(q));
+    output_list(q);
+    printf("\n");
+    printf("得到第三个为: %d\n",getnum(q,3));
+    printf("插入第三个100为");
+    insert_to_list(q,3,100);
+    output_list(q);
+    printf("\n");
+    printf("删除第三个100为");
+    delete_list(q,3,0);
+    output_list(q);
+    printf("\n");
+
+    linklist l = locate(q,10);
+    if(l){
+        printf("得到节点: %d\n",l->data);
+    }
+
+    destory(q);
+    printf("销毁链表剩余长度: %d",list_length(q));
+
+
+
+
+}
+
+
+
+
+
+
+
